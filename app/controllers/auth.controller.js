@@ -16,7 +16,7 @@ const signup = async (req, res) => {
   // const isRememberMe = req.body.rememberMe;
   
   try {
-    const {  firstname, lastname, nationalID, email,phonenumber, birthdate , city,user_img, biography, programingLanguages, experienceLevel, experienceYears,password,passwordConfirmation } = req.body;
+    const {  firstname, lastname, nationalID, email,phonenumber, birthdate , city,user_img, biography, programingLanguages, experienceLevel, experienceYears,password,passwordConfirmation, userType} = req.body;
     const user = await User.create({
       firstname:firstname,
       lastname:lastname,
@@ -34,6 +34,7 @@ const signup = async (req, res) => {
         "https://res.cloudinary.com/dwi0qvtbe/image/upload/v1695691224/users_img/profile_zu3vqf.png",
       password: password,
       passwordConfirmation: passwordConfirmation,
+      userType:userType
     });
     programingLanguages.forEach(async (programmingLanguage) => {
       const userProgrammingLanguage = await UserProgrammingLanguage.create({

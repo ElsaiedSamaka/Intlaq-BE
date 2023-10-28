@@ -56,6 +56,9 @@ module.exports = (sequelize, DataTypes) => {
         type:DataTypes.INTEGER,
         allowNull:false
       },
+      userType:{
+        type: DataTypes.ENUM('Employer', 'Employee'),
+      },
       socketId: {
         type: DataTypes.STRING,
       },
