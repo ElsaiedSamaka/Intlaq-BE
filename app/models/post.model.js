@@ -1,5 +1,8 @@
 module.exports = (sequelize, Sequelize) => {
     const Posts = sequelize.define("posts", {
+      postType:{
+        type:Sequelize.ENUM('Article','Job'),
+      },
       img: {
         type: Sequelize.TEXT,
       },

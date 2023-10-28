@@ -71,7 +71,7 @@ const getPosts = async (req, res) => {
 };
 // post a new Post 
 const createPost = async (req,res)=>{
-  const { title, content, tagsIds, userId, isAnonymous } = req.body;
+  const {postType, title, content, tagsIds, userId, isAnonymous } = req.body;
   const tagsArr = tagsIds ? tagsIds.split(",") : [tagsIds];
     try {
       // Get the uploaded file
@@ -79,6 +79,7 @@ const createPost = async (req,res)=>{
       const file = req.file;
       const result = await uploadFile(file, "posts_cover");
      const newPost = await Post.create({
+      postType:postType,
          img: result.secure_url,
          title: title,
          content: content,
@@ -134,6 +135,7 @@ const createPost = async (req,res)=>{
    res.status(201).json(addedPost);
   }else{
     const newPost = await Post.create({
+      postType:postType,
       title: title,
       content: content,
       userId: userId,
