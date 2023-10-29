@@ -193,8 +193,8 @@ const createPost = async (req,res)=>{
           })
        res.status(201).json(addedPost);
         }
-          break;
-      case 'Job':
+          return;
+      case "Job":
         const newPost = await Post.create({
           postType:postType,
           title: title,
@@ -202,9 +202,6 @@ const createPost = async (req,res)=>{
           userId: userId,
           isAnonymous: isAnonymous,
         });
-        if (tagsIds && tagsArr.length > 0) {
-          await newPost.addTags(tagsArr);
-        }
          const newJob = await Jobs.create({
           postId:newPost.id,
           title:title,
@@ -214,10 +211,49 @@ const createPost = async (req,res)=>{
           description:description,
           type:type
          })
-       res.status(201).json(newJob);
+         const addedJop = await Jobs.findByPk(newJob.id,{
+          include:[
+            {
+              model:Post,
+              include:[
+                {model: FavPosts,
+                as: "loved_posts",
+                attributes: ['userId','postId'],},
+                {
+                  model: SavedPosts,
+                  as: "saved_posts",
+                  attributes: ['userId','postId'],
+                 },
+                 {
+                   model: Comment,
+                 },
+                 {
+                  model: User,
+                  include: [
+                  {
+                    model: Follow, // Assuming you have a model called Follow for the follow association
+                    as: "follower",
+                    attributes: ['followerId', 'followingId'],
+                  },
+                  {
+                    model: Follow, // Assuming you have a model called Follow for the follow association
+                    as: "following",
+                   attributes: ['followerId', 'followingId'],
+                },
+              ],
+            },
+                {
+              model:Tags
+            }
+              ],
+            }
+          ]
+         })
+       res.status(201).json(addedJop);
+       return;
         default:
           res.status(200).json({message:"default [PostController]"})
-          break;
+          return;
       }
     } catch (err) {
    res.status(500).json({

@@ -1,6 +1,10 @@
 module.exports = (sequelize, Sequelize) => {
     const Job = sequelize.define("job", {
       // Additional fields specific to jobs
+      postType:{
+        type:Sequelize.ENUM('Article','Job'),
+        defaultValue:'Job'
+      },
       company:{
         type: Sequelize.STRING
       },
