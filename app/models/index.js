@@ -32,7 +32,7 @@ db.refresh_token = require("../models/refresh_token.model.js")(sequelize, Sequel
 db.remember_me = require("../models/remember_me.model.js")(sequelize, Sequelize);
 db.programming_languages = require("./programing_languages.model.js")(sequelize, Sequelize);
 db.user_programming_language=require("./user_programminglanguages.model.js")(sequelize, Sequelize);
-db.job = require("./job.model.js")(sequelize,Sequelize);
+db.jobs = require("./job.model.js")(sequelize,Sequelize);
 // ==========================
 // relationships db.user <=> db.post
 db.user.hasMany(db.posts);

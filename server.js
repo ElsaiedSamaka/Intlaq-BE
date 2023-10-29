@@ -16,14 +16,14 @@ const swaggerUi = require("swagger-ui-express");
 const setupSocket = require("./app/socketio/socket.io");
 
 // Import routes and database models
-const authRouter = require("./app/routes/auth.routes")
+const authRouter = require("./app/routes/auth.routes");
 const usersRouter = require("./app/routes/users.routes");
-const postsRouter = require("./app/routes/posts.routes")
-const tagsRouter = require("./app/routes/tags.routes")
-const commentsRouter = require("./app/routes/comments.routes")
+const postsRouter = require("./app/routes/posts.routes");
+const tagsRouter = require("./app/routes/tags.routes");
+const commentsRouter = require("./app/routes/comments.routes");
 const conversationRouter = require("./app/routes/conversation.routes");
 const repliesRouter = require("./app/routes/replies.routes");
-const programmingLanguagesRouter = require("./app/routes/programming-languages.routes")
+const programmingLanguagesRouter = require("./app/routes/programming-languages.routes");
 const db = require("./app/models");
 
 // Create a new Express app instance

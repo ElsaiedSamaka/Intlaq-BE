@@ -9,6 +9,7 @@ const SavedPosts = require("../models").saved_posts;
 const FavPosts = require("../models").loved_posts;
 const Comment = require("../models").comments;
 const Follow = require("../models").follow;
+const Jobs = require("../models").jobs;
 
 // Get List of Posts
 const getPosts = async (req, res) => {
@@ -71,126 +72,153 @@ const getPosts = async (req, res) => {
 };
 // post a new Post 
 const createPost = async (req,res)=>{
-  const {postType, title, content, tagsIds, userId, isAnonymous } = req.body;
+  const {postType, title, content, tagsIds, userId, isAnonymous, company,workplace,location,description,type} = req.body;
   const tagsArr = tagsIds ? tagsIds.split(",") : [tagsIds];
     try {
-      // Get the uploaded file
-      if(req.file){
-      const file = req.file;
-      const result = await uploadFile(file, "posts_cover");
-     const newPost = await Post.create({
-      postType:postType,
-         img: result.secure_url,
-         title: title,
-         content: content,
-         userId: userId,
-         isAnonymous: isAnonymous,
-         cloudinary_id: result.public_id,
-       });
-       if (tagsIds && tagsArr.length > 0) {
-        await newPost.addTags(tagsArr);
-      }
-      const addedPost = await Post.findByPk(newPost.id,{
-        include: [
-          {
-            model: FavPosts,
-            as: "loved_posts",
-            attributes: ['userId','postId'],
-          },
-          {
-            model: SavedPosts,
-            as: "saved_posts",
-            attributes: ['userId','postId'],
-          },
-          {
-            model: Comment,
-          },
-          {
-            model: User,
-            model: User,
+      switch (postType) {
+        case "Article":
+          if(req.file){
+            const file = req.file;
+            const result = await uploadFile(file, "posts_cover");
+           const newPost = await Post.create({
+            postType:postType,
+               img: result.secure_url,
+               title: title,
+               content: content,
+               userId: userId,
+               isAnonymous: isAnonymous,
+               cloudinary_id: result.public_id,
+             });
+             if (tagsIds && tagsArr.length > 0) {
+              await newPost.addTags(tagsArr);
+            }
+            const addedPost = await Post.findByPk(newPost.id,{
+              include: [
+                {
+                  model: FavPosts,
+                  as: "loved_posts",
+                  attributes: ['userId','postId'],
+                },
+                {
+                  model: SavedPosts,
+                  as: "saved_posts",
+                  attributes: ['userId','postId'],
+                },
+                {
+                  model: Comment,
+                },
+                {
+                  model: User,
+                  model: User,
+                  include: [
+                    {
+                      model: Follow, // Assuming you have a model called Follow for the follow association
+                      as: "follower",
+                      attributes: ['followerId', 'followingId'],
+                    },
+                    {
+                      model: Follow, // Assuming you have a model called Follow for the follow association
+                      as: "following",
+                      attributes: ['followerId', 'followingId'],
+                    },
+                  ],
+                },
+                {
+                  model:Tags
+                }
+              ],
+              attributes: {
+                include: [
+                  [Sequelize.literal('(SELECT COUNT(*) FROM loved_posts WHERE loved_posts.postId = posts.id)'), 'loveCount'],
+                  [Sequelize.literal('(SELECT COUNT(*) FROM saved_posts WHERE saved_posts.postId = posts.id)'), 'saveCount']
+                ]
+              },
+            })
+         res.status(201).json(addedPost);
+        }else{
+          const newPost = await Post.create({
+            postType:postType,
+            title: title,
+            content: content,
+            userId: userId,
+            isAnonymous: isAnonymous,
+          });
+          if (tagsIds && tagsArr.length > 0) {
+            await newPost.addTags(tagsArr);
+          }
+          // const tags = await newPost.getTags();
+          // const user = await newPost.getUser();
+          // const comments = await newPost.getComments();
+          const addedPost = await Post.findByPk(newPost.id,{
             include: [
               {
-                model: Follow, // Assuming you have a model called Follow for the follow association
-                as: "follower",
-                attributes: ['followerId', 'followingId'],
+                model: FavPosts,
+                as: "loved_posts",
+                attributes: ['userId','postId'],
               },
               {
-                model: Follow, // Assuming you have a model called Follow for the follow association
-                as: "following",
-                attributes: ['followerId', 'followingId'],
+                model: SavedPosts,
+                as: "saved_posts",
+                attributes: ['userId','postId'],
               },
+              {
+                model: Comment,
+              },
+              {
+                model: User,
+                model: User,
+                include: [
+                  {
+                    model: Follow, // Assuming you have a model called Follow for the follow association
+                    as: "follower",
+                    attributes: ['followerId', 'followingId'],
+                  },
+                  {
+                    model: Follow, // Assuming you have a model called Follow for the follow association
+                    as: "following",
+                    attributes: ['followerId', 'followingId'],
+                  },
+                ],
+              },
+              {
+                model:Tags
+              }
             ],
-          },
-          {
-            model:Tags
-          }
-        ],
-        attributes: {
-          include: [
-            [Sequelize.literal('(SELECT COUNT(*) FROM loved_posts WHERE loved_posts.postId = posts.id)'), 'loveCount'],
-            [Sequelize.literal('(SELECT COUNT(*) FROM saved_posts WHERE saved_posts.postId = posts.id)'), 'saveCount']
-          ]
-        },
-      })
-   res.status(201).json(addedPost);
-  }else{
-    const newPost = await Post.create({
-      postType:postType,
-      title: title,
-      content: content,
-      userId: userId,
-      isAnonymous: isAnonymous,
-    });
-    if (tagsIds && tagsArr.length > 0) {
-      await newPost.addTags(tagsArr);
-    }
-    // const tags = await newPost.getTags();
-    // const user = await newPost.getUser();
-    // const comments = await newPost.getComments();
-    const addedPost = await Post.findByPk(newPost.id,{
-      include: [
-        {
-          model: FavPosts,
-          as: "loved_posts",
-          attributes: ['userId','postId'],
-        },
-        {
-          model: SavedPosts,
-          as: "saved_posts",
-          attributes: ['userId','postId'],
-        },
-        {
-          model: Comment,
-        },
-        {
-          model: User,
-          model: User,
-          include: [
-            {
-              model: Follow, // Assuming you have a model called Follow for the follow association
-              as: "follower",
-              attributes: ['followerId', 'followingId'],
+            attributes: {
+              include: [
+                [Sequelize.literal('(SELECT COUNT(*) FROM loved_posts WHERE loved_posts.postId = posts.id)'), 'loveCount'],
+                [Sequelize.literal('(SELECT COUNT(*) FROM saved_posts WHERE saved_posts.postId = posts.id)'), 'saveCount']
+              ]
             },
-            {
-              model: Follow, // Assuming you have a model called Follow for the follow association
-              as: "following",
-              attributes: ['followerId', 'followingId'],
-            },
-          ],
-        },
-        {
-          model:Tags
+          })
+       res.status(201).json(addedPost);
         }
-      ],
-      attributes: {
-        include: [
-          [Sequelize.literal('(SELECT COUNT(*) FROM loved_posts WHERE loved_posts.postId = posts.id)'), 'loveCount'],
-          [Sequelize.literal('(SELECT COUNT(*) FROM saved_posts WHERE saved_posts.postId = posts.id)'), 'saveCount']
-        ]
-      },
-    })
- res.status(201).json(addedPost);
-  }
+          break;
+      case 'Job':
+        const newPost = await Post.create({
+          postType:postType,
+          title: title,
+          content: content,
+          userId: userId,
+          isAnonymous: isAnonymous,
+        });
+        if (tagsIds && tagsArr.length > 0) {
+          await newPost.addTags(tagsArr);
+        }
+         const newJob = await Jobs.create({
+          postId:newPost.id,
+          title:title,
+          company:company,
+          workplace:workplace,
+          location:location,
+          description:description,
+          type:type
+         })
+       res.status(201).json(newJob);
+        default:
+          res.status(200).json({message:"default [PostController]"})
+          break;
+      }
     } catch (err) {
    res.status(500).json({
        message: err.message || "Some error occurred while creating Post. [Posts controller]",
@@ -590,7 +618,7 @@ const getPostsByUseId = async (req, res) => {
   }
 };
 
-// full text search over products
+// full text search over posts
 const searchPosts = async (req, res) => {
   try {
     const { t } = req.query;
