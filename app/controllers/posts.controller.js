@@ -309,6 +309,18 @@ const getPostById = async (req, res) => {
     }
   };
 
+// Get Job by ID
+const getJobById = async (req,res)=>{
+  try {
+    const job = await Jobs.findByPk(req.params.id);
+    if(!job) return res.status(404).json({ message: "No Job found. [Posts controller] " })
+    res.status(200).json(job)
+  } catch (err) {
+    res.status(500).json({
+      message: err.message || "Some error occurred while retrieving Job.",
+    });
+  }
+}
 // Update a Post by ID
 const updatePostById = async (req, res) => {
     try {
@@ -705,6 +717,7 @@ module.exports = {
     getJobs,
     createPost,
     getPostById,
+    getJobById,
     updatePostById,
     deletePostById,
     savePostById,
