@@ -21,6 +21,9 @@ const getPosts = async (req, res) => {
       where: condition,
       include: [
         {
+          model:Jobs,
+        },
+        {
           model: FavPosts,
           as: "loved_posts",
           attributes: ['userId','postId'],
@@ -72,7 +75,7 @@ const getPosts = async (req, res) => {
 };
 // post a new Post 
 const createPost = async (req,res)=>{
-  const {postType, title, content, tagsIds, userId, isAnonymous, company,workplace,location,description,type} = req.body;
+  const {postType, title, content, tagsIds, userId, isAnonymous, jobTitle,company,workplace,location,description,type} = req.body;
   const tagsArr = tagsIds ? tagsIds.split(",") : [tagsIds];
     try {
       switch (postType) {
@@ -204,7 +207,7 @@ const createPost = async (req,res)=>{
         });
          const newJob = await Jobs.create({
           postId:newPost.id,
-          title:title,
+          jobTitle:jobTitle,
           company:company,
           workplace:workplace,
           location:location,

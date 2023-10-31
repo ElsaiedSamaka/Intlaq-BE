@@ -5,6 +5,9 @@ module.exports = (sequelize, Sequelize) => {
         type:Sequelize.ENUM('Article','Job'),
         defaultValue:'Job'
       },
+      jobTitle:{
+        type: Sequelize.STRING
+      },
       company:{
         type: Sequelize.STRING
       },

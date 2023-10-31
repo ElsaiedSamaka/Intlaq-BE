@@ -95,6 +95,9 @@ db.programming_languages.belongsToMany(db.user ,{
   through: db.user_programming_language,
   foreignKey: 'programmingLanguageId',
 });
-
+// relationship db.posts <=> db.jobs
+db.posts.hasOne(db.jobs,{
+  onDelete: 'CASCADE'
+})
 
 module.exports = db;

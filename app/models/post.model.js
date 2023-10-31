@@ -1,3 +1,5 @@
+const db = require(".");
+
 module.exports = (sequelize, Sequelize) => {
     const Posts = sequelize.define("posts", {
       postType:{
@@ -41,7 +43,6 @@ module.exports = (sequelize, Sequelize) => {
       type: sequelize.QueryTypes.SELECT 
     });
   };
-
     return Posts;
   };
   
