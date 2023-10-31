@@ -312,7 +312,12 @@ const getPostById = async (req, res) => {
 // Get Job by ID
 const getJobById = async (req,res)=>{
   try {
-    const job = await Jobs.findByPk(req.params.id);
+    const job = await Jobs.findByPk(req.params.id,{include:[
+      {
+        model:Post,
+        include:User
+      }
+    ]});
     if(!job) return res.status(404).json({ message: "No Job found. [Posts controller] " })
     res.status(200).json(job)
   } catch (err) {
