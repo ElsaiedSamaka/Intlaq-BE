@@ -73,6 +73,37 @@ const getPosts = async (req, res) => {
     });
   }
 };
+const getJobs = async (req, res) => {
+  const { jobTitle, company, workplace, type, location, page, size } = req.query;
+  const { limit, offset } = getPagination(page, size);
+  
+  let condition = {
+    postType: 'Job'
+  };
+
+  // Build the condition dynamically based on the provided request queries
+  const filterParams = { jobTitle, company, workplace, type, location };
+  Object.keys(filterParams).forEach(key => {
+    if (filterParams[key]) {
+      condition[key] = { [Op.like]: `%${filterParams[key]}%` };
+    }
+  });
+
+  try {
+    const jobs = await Jobs.findAndCountAll({
+      where: condition,
+      limit,
+      offset
+    });
+    if (!jobs) return res.status(404).json({ message: "No Jobs found." });
+    const response = getPagingData(jobs, page, limit, jobs.rows.length);
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(500).json({
+      message: err.message || "Some error occurred while retrieving Posts."
+    });
+  }
+};
 // post a new Post 
 const createPost = async (req,res)=>{
   const {postType, title, content, tagsIds, userId, isAnonymous, jobTitle,company,workplace,location,description,type} = req.body;
@@ -671,6 +702,7 @@ const searchPosts = async (req, res) => {
 }
 module.exports = {
     getPosts,
+    getJobs,
     createPost,
     getPostById,
     updatePostById,

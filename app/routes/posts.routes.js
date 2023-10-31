@@ -6,6 +6,8 @@ const checkUser = require( "../middleware/checkUser" );
 
 // get all posts
 router.get('/',postsController.getPosts)
+// get all jobs
+router.get('/jobs',postsController.getJobs)
 // post new post
 router.post('/',upload.single("file_img"),postsController.createPost)
 // get Posts By Following
