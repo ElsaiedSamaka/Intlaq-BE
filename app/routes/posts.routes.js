@@ -27,7 +27,7 @@ router.post('/:id/save',postsController.savePostById)
 // unsave post by id 
 router.post('/:id/unsave',postsController.unSavePostById)
 //get saved posts of current user
-router.get("/user/saved-posts",postsController.getSavedPosts)
+router.post("/user/saved-posts",postsController.getSavedPosts)
 // fav post by id
 router.post('/:id/fav',postsController.favPostById)
 // unfav post by id 
