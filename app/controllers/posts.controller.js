@@ -600,6 +600,9 @@ const getPostsByFollowing = async(req,res)=>{
     where: { userId: followingIds  ,isAnonymous: false},
     include: [
       {
+        model:Jobs
+       },
+      {
         model: FavPosts,
         as: "loved_posts",
         attributes: ['userId','postId'],
