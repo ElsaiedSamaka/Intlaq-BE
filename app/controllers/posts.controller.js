@@ -709,6 +709,9 @@ const getPostsByUseId = async (req, res) => {
       where: { userId:userId },
       include: [
         {
+          model:Jobs,
+        },
+        {
           model: Tags,
         },
         {
