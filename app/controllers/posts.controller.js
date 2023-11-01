@@ -10,6 +10,7 @@ const FavPosts = require("../models").loved_posts;
 const Comment = require("../models").comments;
 const Follow = require("../models").follow;
 const Jobs = require("../models").jobs;
+const Application = require("../models").job_applications;
 
 // Get List of Posts
 const getPosts = async (req, res) => {
@@ -311,7 +312,11 @@ const getPostById = async (req, res) => {
 
 // Get Job by ID
 const getJobById = async (req,res)=>{
+  const {userId,jobId} = req.body;
   try {
+    const alreadyApplied = await Application.findOne({
+      where: {userId,jobId}
+  })
     const job = await Jobs.findByPk(req.params.id,{include:[
       {
         model:Post,
@@ -319,7 +324,7 @@ const getJobById = async (req,res)=>{
       }
     ]});
     if(!job) return res.status(404).json({ message: "No Job found. [Posts controller] " })
-    res.status(200).json(job)
+    res.status(200).json({job,alreadyApplied});
   } catch (err) {
     res.status(500).json({
       message: err.message || "Some error occurred while retrieving Job.",

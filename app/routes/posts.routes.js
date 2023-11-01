@@ -9,7 +9,7 @@ router.get('/',postsController.getPosts)
 // get all jobs
 router.get('/jobs',postsController.getJobs)
 // get job by id
-router.get('/jobs/:id',postsController.getJobById)
+router.post('/jobs/:id',postsController.getJobById)
 // post new post
 router.post('/',upload.single("file_img"),postsController.createPost)
 // get Posts By Following

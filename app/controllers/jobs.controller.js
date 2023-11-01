@@ -30,6 +30,9 @@ const getApplicationsByJob = async(req,res)=>{
 const createApplication = async(req,res)=>{
     const {userId,jobId} = req.body;
     try {
+        const alreadyApplied = await Application.findOne({
+            where: {userId,jobId}
+        })
         const application = await Application.create({
             userId,jobId
         });
@@ -62,6 +65,7 @@ const deleteApplication = async(req,res)=>{
         return res.status(500).send(error);
     }
 }
+
 module.exports = {
     getApplicationsByUser,
     getApplicationsByJob,
