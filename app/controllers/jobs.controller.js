@@ -33,7 +33,7 @@ const createApplication = async(req,res)=>{
         const application = await Application.create({
             userId,jobId
         });
-        return res.status(200).send(application);
+        return res.status(201).send(application);
     } catch (error) {
         return res.status(500).send(error);
     }
