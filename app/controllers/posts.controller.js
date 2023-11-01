@@ -246,45 +246,90 @@ const createPost = async (req,res)=>{
           description:description,
           type:type
          })
-         const addedJop = await Jobs.findByPk(newJob.id,{
-          include:[
+         const addedPost = await Post.findByPk(newPost.id,{
+          include: [
             {
-              model:Post,
-              include:[
-                {model: FavPosts,
-                as: "loved_posts",
-                attributes: ['userId','postId'],},
+             model:Jobs
+            },
+            {
+              model: FavPosts,
+              as: "loved_posts",
+              attributes: ['userId','postId'],
+            },
+            {
+              model: SavedPosts,
+              as: "saved_posts",
+              attributes: ['userId','postId'],
+            },
+            {
+              model: Comment,
+            },
+            {
+              model: User,
+              model: User,
+              include: [
                 {
-                  model: SavedPosts,
-                  as: "saved_posts",
-                  attributes: ['userId','postId'],
-                 },
-                 {
-                   model: Comment,
-                 },
-                 {
-                  model: User,
-                  include: [
-                  {
-                    model: Follow, // Assuming you have a model called Follow for the follow association
-                    as: "follower",
-                    attributes: ['followerId', 'followingId'],
-                  },
-                  {
-                    model: Follow, // Assuming you have a model called Follow for the follow association
-                    as: "following",
-                   attributes: ['followerId', 'followingId'],
+                  model: Follow, // Assuming you have a model called Follow for the follow association
+                  as: "follower",
+                  attributes: ['followerId', 'followingId'],
+                },
+                {
+                  model: Follow, // Assuming you have a model called Follow for the follow association
+                  as: "following",
+                  attributes: ['followerId', 'followingId'],
                 },
               ],
             },
-                {
+            {
               model:Tags
             }
-              ],
-            }
-          ]
-         })
-       res.status(201).json(addedJop);
+          ],
+          attributes: {
+            include: [
+              [Sequelize.literal('(SELECT COUNT(*) FROM loved_posts WHERE loved_posts.postId = posts.id)'), 'loveCount'],
+              [Sequelize.literal('(SELECT COUNT(*) FROM saved_posts WHERE saved_posts.postId = posts.id)'), 'saveCount']
+            ]
+          },
+        })
+        //  const addedJop = await Jobs.findByPk(newJob.id,{
+        //   include:[
+        //     {
+        //       model:Post,
+        //       include:[
+        //         {model: FavPosts,
+        //         as: "loved_posts",
+        //         attributes: ['userId','postId'],},
+        //         {
+        //           model: SavedPosts,
+        //           as: "saved_posts",
+        //           attributes: ['userId','postId'],
+        //          },
+        //          {
+        //            model: Comment,
+        //          },
+        //          {
+        //           model: User,
+        //           include: [
+        //           {
+        //             model: Follow, // Assuming you have a model called Follow for the follow association
+        //             as: "follower",
+        //             attributes: ['followerId', 'followingId'],
+        //           },
+        //           {
+        //             model: Follow, // Assuming you have a model called Follow for the follow association
+        //             as: "following",
+        //            attributes: ['followerId', 'followingId'],
+        //         },
+        //       ],
+        //     },
+        //         {
+        //       model:Tags
+        //     }
+        //       ],
+        //     }
+        //   ]
+        //  })
+       res.status(201).json(addedPost);
        return;
         default:
           res.status(200).json({message:"default [PostController]"})
