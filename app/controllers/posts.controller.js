@@ -1,6 +1,7 @@
 const { Sequelize } = require("sequelize");
 const { getPagination, getPagingData } = require("../helper/getPagination");
 const { uploadFile } = require("../helper/uploadFiles");
+const { Op } = require("sequelize");
 const Reply = require("../models").replies;
 const Tags  = require("../models").tags;
 const User = require("../models").user;
