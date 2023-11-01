@@ -24,6 +24,7 @@ const commentsRouter = require("./app/routes/comments.routes");
 const conversationRouter = require("./app/routes/conversation.routes");
 const repliesRouter = require("./app/routes/replies.routes");
 const programmingLanguagesRouter = require("./app/routes/programming-languages.routes");
+const jobsRouter = require("./app/routes/jobs.routes");
 const db = require("./app/models");
 
 // Create a new Express app instance
@@ -116,6 +117,7 @@ app.use("/api/comments",commentsRouter);
 app.use("/api/conversations",conversationRouter);
 app.use("/api/replies",repliesRouter);
 app.use("/api/programming-languages",programmingLanguagesRouter);
+app.use("/api/jobs/applications",jobsRouter);
 // Define the port to listen on
 const PORT = process.env.NODE_APP_PORT || 3000;
 

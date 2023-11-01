@@ -33,6 +33,7 @@ db.remember_me = require("../models/remember_me.model.js")(sequelize, Sequelize)
 db.programming_languages = require("./programing_languages.model.js")(sequelize, Sequelize);
 db.user_programming_language=require("./user_programminglanguages.model.js")(sequelize, Sequelize);
 db.jobs = require("./job.model.js")(sequelize,Sequelize);
+db.job_applications = require('./job_application.model')(sequelize,Sequelize);
 // ==========================
 // relationships db.user <=> db.post
 db.user.hasMany(db.posts);
@@ -99,5 +100,8 @@ db.programming_languages.belongsToMany(db.user ,{
 db.posts.hasOne(db.jobs,{
   onDelete: 'CASCADE'
 })
-
+// relationship db.user <=> db.job_applications
+db.user.hasMany(db.job_applications);
+db.job_applications.belongsTo(db.user);
+db.job_applications.belongsTo(db.jobs);
 module.exports = db;
